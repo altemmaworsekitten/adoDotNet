@@ -8,6 +8,7 @@
 |---|---|---|---|
 | [`01-first-query`](01-first-query/README.md) | 1. Первый запрос к базе из C# | `OrdersApp` | `OrdersApp/Program.cs`, `report.md` |
 | [`02-parameters`](02-parameters/README.md) | 2. Параметры запроса и SQL-инъекция | `SearchApp` | `SearchApp/Program.cs`, `report.md` |
+| [`03-items`](03-items/README.md) | 3. Строки в объекты и ошибки ограничений | `ItemsApp` | `ItemsApp/Program.cs`, `report.md` |
 
 ## Что лежит в папке работы
 

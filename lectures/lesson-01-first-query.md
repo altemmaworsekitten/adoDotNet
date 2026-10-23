@@ -58,7 +58,7 @@ while (await reader.ReadAsync())
 | `28000: role "student" does not exist` | программа подключилась к другому PostgreSQL на порту 5432 | `Port=5433` в строке подключения |
 | `28P01: password authentication failed for user "student"` | неверный пароль | пароль `student`, как в `docker-compose.yml` |
 | `3D000: database "order" does not exist` | опечатка в имени базы | база называется `orders` |
-| `42601: syntax error at or near "order"` | таблица названа ключевым словом SQL | таблица называется `orders` |
+| `42601: syntax error at or near "order"` | в запросе вместо `orders` написано `order` — ключевое слово SQL | таблица называется `orders` |
 | `Connection is not open` | соединение создано `CreateConnection()`, но не открыто | `await dataSource.OpenConnectionAsync()` |
 | `Reading as 'System.Int32' is not supported for fields having DataTypeName 'text'` | Get-метод не подходит к типу столбца | для `text` — `GetString`, для `numeric` — `GetDecimal` |
 | `Ordinal must be between 0 and 2` | номер столбца больше последнего | номера считаются с нуля по порядку в `SELECT` |
