@@ -3,7 +3,8 @@
 Запуск: python update_materials.py <папка шаблона> <папка репозитория студента>
 
 Правила переноса:
-- файлы преподавателя (список TEACHER ниже) заменяются версией из шаблона;
+- файлы преподавателя (список TEACHER ниже, README.md папок первого уровня
+  и practice/NN-тема/tasks.md) заменяются версией из шаблона;
 - любой другой файл копируется, только если его ещё нет у студента:
   новые задания и заготовки появляются, решения студента не меняются;
 - файлы не удаляются;
@@ -25,7 +26,10 @@ def is_teacher(rel):
         return True
     # README.md папки первого уровня: homework/README.md, exams/README.md …
     parts = rel.split("/")
-    return len(parts) == 2 and parts[1] == "README.md"
+    if len(parts) == 2 and parts[1] == "README.md":
+        return True
+    # условия заданий практической работы: practice/01-first-query/tasks.md …
+    return len(parts) == 3 and parts[0] == "practice" and parts[2] == "tasks.md"
 
 
 def template_files(root):
