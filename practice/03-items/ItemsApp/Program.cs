@@ -44,8 +44,23 @@ static async Task<string> AddItemAsync(
     command.Parameters.AddWithValue("quantity", quantity);
     command.Parameters.AddWithValue("price", price);
 
-    int rows = await command.ExecuteNonQueryAsync();
-    return $"Добавлено строк: {rows}";
+    try
+    {
+        int rows = await command.ExecuteNonQueryAsync();
+        return $"Добавлено строк: {rows}";
+    }
+    catch (PostgresException e) when (e.SqlState == PostgresErrorCodes.UniqueViolation)
+    {
+        return $"Товар {productId} уже есть в заказе {orderId}.";
+    }
+    catch (PostgresException e) when (e.SqlState == PostgresErrorCodes.ForeignKeyViolation)
+    {
+        return $"Заказа {orderId} или товара {productId} нет в базе.";
+    }
+    catch (PostgresException e) when (e.SqlState == PostgresErrorCodes.CheckViolation)
+    {
+        return $"Количество должно быть больше нуля, указано {quantity}.";
+    }
 }
 
 // Возвращает позиции заказа списком объектов OrderItemRow.
@@ -67,7 +82,12 @@ static async Task<List<OrderItemRow>> GetItemsAsync(NpgsqlDataSource dataSource,
     await using var reader = await command.ExecuteReaderAsync();
     while (await reader.ReadAsync())
     {
-        // Здесь нужно создать OrderItemRow из текущей строки и добавить его в items.
+        // Маппер: столбцы читаются по имени, поэтому порядок в SELECT не важен.
+        var item = new OrderItemRow(
+            reader.GetString(reader.GetOrdinal("product_name")),
+            reader.GetInt32(reader.GetOrdinal("quantity")),
+            reader.GetDecimal(reader.GetOrdinal("price")));
+        items.Add(item);
     }
 
     return items;
